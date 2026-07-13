@@ -1,80 +1,85 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Перемирие 2025 · $100 → $1,428</title>
-<style>
-  body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;color:#fff;font-family:system-ui,sans-serif;text-align:center;}
-  .big{font-size:19vw;font-weight:900;color:#00ff9d;letter-spacing:-6px;text-shadow:0 0 50px #00ff9d30;}
-  .sub{font-size:4.5vw;margin:30px 0 50px;color:#aaa;}
-  .box{background:#111;border:1px solid #333;padding:18px 35px;border-radius:18px;min-width:160px;}
-  .val{font-size:5.5vw;font-weight:bold;}
-  .lbl{font-size:2.2vw;color:#666;text-transform:uppercase;letter-spacing:1.2px;margin-top:6px;}
-  .time{position:fixed;top:16px;font-size:2.8vw;color:#555;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>До Эйлата</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        .countdown {
+            font-size: 4.5em;
+            font-weight: bold;
+            letter-spacing: 5px;
+            margin: 30px 0;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        .info {
+            font-size: 1.3em;
+            margin-top: 30px;
+        }
+        .emoji {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
+    <div class="emoji">🧳🌴</div>
+    <h1>До поездки в Эйлат</h1>
+    <p class="subtitle">10 августа 2026 • 05:00 утра</p>
+    
+    <div class="countdown" id="countdown">00 дней 00:00:00</div>
+    
+    <div class="info">
+        Осталось совсем немного...<br>
+        Готовимся к морю! 🏖️
+    </div>
 
-<div class="time" id="t">Загрузка...</div>
-<div class="big" id="win">—</div>
-<div class="sub">получу, если куплю "Yes" на $100</div>
-<div style="display:flex;gap:50px;">
-  <div class="box"><div class="val" id="cents">—</div><div class="lbl">цена yes</div></div>
-  <div class="box"><div class="val" id="prob">—</div><div class="lbl">шанс перемирия</div></div>
-</div>
+    <script>
+        const targetDate = new Date('2026-08-10T05:00:00').getTime();
 
-<script>
-const SLUG = "russia-x-ukraine-ceasefire-in-2025";
-const FALLBACK_PRICE = 0.07; // Твои реальные 7¢
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
 
-async function fetchFresh() {
-  const url = `https://gamma-api.polymarket.com/events?slug=${SLUG}&_t=${Date.now()}`;
-  const resp = await fetch(url, {
-    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
-  });
-  if (!resp.ok) throw new Error('HTTP ' + resp.status);
-  return await resp.json();
-}
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = 
+                    "🎉 ПОРА В ЭЙЛАТ!!! Счастливого отпуска!";
+                return;
+            }
 
-async function update(retry = 0) {
-  let yesPrice = FALLBACK_PRICE;
-  
-  try {
-    const events = await fetchFresh();
-    if (events && events[0] && events[0].markets && events[0].markets[0]) {
-      const market = events[0].markets[0];
-      const outcomes = JSON.parse(market.outcomes || '["Yes", "No"]');
-      const yesIndex = outcomes.indexOf("Yes");
-      if (yesIndex !== -1) {
-        const prices = JSON.parse(market.outcomePrices || '[0.07, 0.93]');
-        yesPrice = parseFloat(prices[yesIndex]);
-      }
-    }
-    if (!yesPrice || yesPrice <= 0 || yesPrice >= 1) yesPrice = FALLBACK_PRICE;
-  } catch(e) {
-    console.warn("Попытка " + (retry + 1) + " провалилась:", e);
-    if (retry < 2) { // Retry до 3 раз
-      await new Promise(r => setTimeout(r, 2000)); // Пауза 2 сек
-      return update(retry + 1);
-    }
-    yesPrice = FALLBACK_PRICE; // Fallback на 7¢
-  }
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  const payout = Math.round(100 / yesPrice);
-  const cents  = (yesPrice * 100).toFixed(0) + "¢";
-  const chance = Math.round(yesPrice * 100) + "%";
+            document.getElementById('countdown').innerHTML = 
+                `${days} дней ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
 
-  document.getElementById("win").textContent   = "$" + payout.toLocaleString("ru-RU");
-  document.getElementById("cents").textContent = cents;
-  document.getElementById("prob").textContent  = chance;
-  
-  document.getElementById("t").textContent = 
-    "Обновлено: " + new Date().toLocaleTimeString("ru-RU");
-}
-
-update();
-setInterval(update, 60000);
-</script>
+        // Обновляем каждую секунду
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
 </body>
 </html>
