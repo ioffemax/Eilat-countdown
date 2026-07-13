@@ -6,78 +6,61 @@
     <title>До Эйлата</title>
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2b5c, #1e4a8f);
             color: white;
             text-align: center;
             margin: 0;
-            padding: 20px;
-            min-height: 100vh;
+            padding: 15px;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow: hidden;
         }
         .emoji {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
+            font-size: 2.8rem;
+            margin-bottom: 8px;
         }
         h1 {
-            font-size: 2.4rem;
-            margin: 10px 0 8px 0;
+            font-size: 1.85rem;
+            margin: 8px 0 6px 0;
         }
         .subtitle {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            margin-bottom: 30px;
+            font-size: 1.05rem;
+            opacity: 0.85;
+            margin-bottom: 20px;
         }
         .countdown {
-            font-size: 3.2rem;
+            font-size: 2.45rem;
             font-weight: bold;
-            letter-spacing: 3px;
-            margin: 25px 0;
-            text-shadow: 0 0 15px rgba(255,255,255,0.6);
+            letter-spacing: 2px;
+            margin: 15px 0 20px 0;
+            text-shadow: 0 0 12px rgba(255,255,255,0.5);
         }
         .info {
-            font-size: 1.1rem;
-            margin-top: 30px;
-            opacity: 0.85;
-        }
-
-        /* Адаптация под маленький экран */
-        @media (max-width: 480px) {
-            h1 { font-size: 2rem; }
-            .countdown { font-size: 2.6rem; letter-spacing: 2px; }
-            .emoji { font-size: 2.8rem; }
-            .subtitle { font-size: 1.1rem; }
-        }
-
-        @media (max-width: 360px) {
-            .countdown { font-size: 2.3rem; }
+            font-size: 1rem;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <div class="emoji">🧳🌴</div>
-    <h1>До поездки в Эйлат</h1>
-    <p class="subtitle">10 августа 2026 • 05:00 утра</p>
+    <h1>До Эйлата</h1>
+    <p class="subtitle">10.08 • 05:00</p>
     
     <div class="countdown" id="countdown">Загрузка...</div>
     
-    <div class="info">
-        Осталось совсем немного...<br>
-        Готовимся к морю! 🏖️
-    </div>
+    <div class="info">Готовимся к морю 🏖️</div>
 
     <script>
         const targetDate = new Date('2026-08-10T05:00:00').getTime();
 
         function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
+            const distance = targetDate - Date.now();
 
             if (distance < 0) {
-                document.getElementById('countdown').innerHTML = 
-                    "🎉 ПОРА В ЭЙЛАТ!!!";
+                document.getElementById('countdown').innerHTML = "🎉 ПОРА В ЭЙЛАТ!";
                 return;
             }
 
@@ -87,7 +70,7 @@
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             document.getElementById('countdown').innerHTML = 
-                `${days} дн ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                `${days}д ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
         setInterval(updateCountdown, 1000);
